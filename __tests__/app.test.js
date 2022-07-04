@@ -5,7 +5,7 @@ const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index.js");
 
 afterAll(() => {
-  if (db.end) db.end();
+  if (db.end) return db.end();
 });
 beforeEach(() => {
   return seed(testData);
@@ -18,6 +18,7 @@ describe("GET api/topics", () => {
       .expect(200)
       .then(({ body }) => {
         const { topics } = body;
+        expect(topics.length).toBe(3);
         expect(topics).toBeInstanceOf(Array);
         topics.forEach((topic) => {
           expect(topic).toEqual(
@@ -29,6 +30,9 @@ describe("GET api/topics", () => {
         });
       });
   });
+});
+
+describe("Errors", () => {
   test("status:404, responds with error message when passed an invalid route", () => {
     return request(app)
       .get("/api/toopics")

@@ -60,6 +60,15 @@ describe("4. GET /api/articles/:article_id", () => {
         expect(body.msg).toBe("Invalid input");
       });
   });
+  test.only("status:404, responds with an error message when article id doesn't exist", () => {
+    const article_id = 9999;
+    return request(app)
+      .get(`/api/articles${article_id}`)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Route not found");
+      });
+  });
 });
 
 describe("Errors", () => {

@@ -32,6 +32,36 @@ describe("GET api/topics", () => {
   });
 });
 
+describe("4. GET /api/articles/:article_id", () => {
+  test("status:200 responds with a matching article", () => {
+    const article_ID = 3;
+
+    const article = {
+      article_id: article_ID,
+      title: "Eight pug gifs that remind me of mitch",
+      topic: "mitch",
+      author: "icellusedkars",
+      body: "some gifs",
+      created_at: new Date(1604394720000).toISOString(),
+      votes: 0,
+    };
+    return request(app)
+      .get(`/api/articles/${article_ID}`)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toEqual(article);
+      });
+  });
+  test("status:400, responds with an error message when passed a bad article ID", () => {
+    return request(app)
+      .get("/api/articles/invalidID")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid input");
+      });
+  });
+});
+
 describe("Errors", () => {
   test("status:404, responds with error message when passed an invalid route", () => {
     return request(app)

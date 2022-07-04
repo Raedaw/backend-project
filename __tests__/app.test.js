@@ -60,13 +60,36 @@ describe("4. GET /api/articles/:article_id", () => {
         expect(body.msg).toBe("Invalid input");
       });
   });
-  test.only("status:404, responds with an error message when article id doesn't exist", () => {
+  test("status:404, responds with an error message when article id doesn't exist", () => {
     const article_id = 9999;
     return request(app)
       .get(`/api/articles${article_id}`)
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Route not found");
+      });
+  });
+});
+
+describe("5. PATCH /api/articles/:article_id", () => {
+  test("status:200, responds with the updated article", () => {
+    const newVote = 10;
+    const article_ID = 1;
+    const addVotes = { inc_votes: newVote };
+    return request(app)
+      .patch(`/api/articles/${article_ID}`)
+      .send(addVotes)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toEqual({
+          article_id: article_ID,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 110,
+        });
       });
   });
 });

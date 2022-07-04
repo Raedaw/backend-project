@@ -2,11 +2,16 @@ const express = require("express");
 //const connection = require("./db/connection");
 const app = express();
 const { getTopics } = require("./controllers/topics.controllers");
-const { getArticleByID } = require("./controllers/articles.controllers");
-//app.use(express.json())
+const {
+  getArticleByID,
+  patchArticleVotes,
+} = require("./controllers/articles.controllers");
+app.use(express.json());
 
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleByID);
+
+app.patch("/api/articles/:article_id", patchArticleVotes);
 
 //error handling:
 app.all("/*", (req, res) => {

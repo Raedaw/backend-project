@@ -7,14 +7,13 @@ const { getTopics } = require("./controllers/topics.controllers");
 app.get("/api/topics", getTopics);
 
 //error handling:
+app.all("/*", (req, res) => {
+  res.status(404).send({ msg: "Route not found" });
+});
 
-// app.all("/*", (req, res) => {
-//     res.status(404).send({ msg: "Route not found" });
-//   });
-
-//   app.use((err, req, res, next) => {
-//     console.log(err);
-//     res.sendStatus(500);
-//   });
+app.use((err, req, res, next) => {
+  console.log(err);
+  res.sendStatus(500);
+});
 
 module.exports = app;

@@ -29,4 +29,12 @@ describe("GET api/topics", () => {
         });
       });
   });
+  test("status:404, responds with error message when passed an invalid route", () => {
+    return request(app)
+      .get("/api/toopics")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Route not found");
+      });
+  });
 });

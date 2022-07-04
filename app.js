@@ -2,9 +2,11 @@ const express = require("express");
 //const connection = require("./db/connection");
 const app = express();
 const { getTopics } = require("./controllers/topics.controllers");
+const { getArticleByID } = require("./controllers/articles.controllers");
 //app.use(express.json())
 
 app.get("/api/topics", getTopics);
+app.get("/api/articles/:article_id", getArticleByID);
 
 //error handling:
 app.all("/*", (req, res) => {
@@ -12,8 +14,9 @@ app.all("/*", (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  console.log(err);
-  res.sendStatus(500);
+  if (err.code === "22P02") {
+    res.status(400).send({ msg: "Invalid input" });
+  } else res.sendStatus(500).send({ msg: "Internal Server Error" });
 });
 
 module.exports = app;

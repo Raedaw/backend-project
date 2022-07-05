@@ -116,6 +116,28 @@ describe("5. PATCH /api/articles/:article_id", () => {
   });
 });
 
+describe("6. GET /api/users", () => {
+  test("status: 200, responds with an array of user objects", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const { users } = body;
+        expect(users.length).toBe(4);
+        expect(users).toBeInstanceOf(Array);
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+});
+
 describe("Errors", () => {
   test("status:404, responds with error message when passed an invalid route", () => {
     return request(app)

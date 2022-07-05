@@ -2,7 +2,14 @@
 const {
   fetchArticleByID,
   updateArticleVotes,
+  selectArticles,
 } = require("../models/articles.models");
+
+exports.getArticles = (req, res) => {
+  selectArticles().then((articles) => {
+    res.status(200).send({ articles });
+  });
+};
 
 exports.getArticleByID = (req, res, next) => {
   const { article_id } = req.params;

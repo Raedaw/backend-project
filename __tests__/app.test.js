@@ -3,6 +3,7 @@ const app = require("../app");
 const db = require("../db/connection");
 const seed = require("../db/seeds/seed");
 const testData = require("../db/data/test-data/index.js");
+const sorted = require("jest-sorted");
 
 afterAll(() => {
   if (db.end) return db.end();
@@ -134,6 +135,40 @@ describe("6. GET /api/users", () => {
               avatar_url: expect.any(String),
             })
           );
+        });
+      });
+  });
+});
+
+describe("8. GET /api/articles", () => {
+  test("status:200, responds with an array of article objects", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles.length).toBe(12);
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toBeSortedBy("created_at");
+        articles.forEach((article) => {
+          expect(article).toHaveProperty("title");
+          expect(article).toHaveProperty("article_id");
+          expect(article).toHaveProperty("topic");
+          expect(article).toHaveProperty("created_at");
+          expect(article).toHaveProperty("votes");
+          expect(article).toHaveProperty("comment_count");
+          expect(article).toHaveProperty("author");
+          // expect(article).toEqual(
+
+          //   // expect.objectContaining({
+          //   //   title: expect.any(String),
+          //   //   article_id: expect.any(Number),
+          //   //   topic: expect.any(String),
+          //   //   created_at: expect.any(String),
+          //   //   votes: expect.any(Number),
+          //   //   comment_count: expect.any(Number),
+          //   // })
+          // );
         });
       });
   });

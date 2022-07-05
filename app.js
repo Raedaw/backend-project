@@ -13,7 +13,7 @@ const {
   handle500,
   handleInvalidInput,
   handleCustomErrors,
-} = require("./controllers/errors.controllers");
+} = require("./error-handling");
 app.use(express.json());
 
 app.get("/api/topics", getTopics);

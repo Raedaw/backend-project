@@ -3,10 +3,12 @@ const express = require("express");
 const app = express();
 const { getTopics } = require("./controllers/topics.controllers");
 const { getArticleByID } = require("./controllers/articles.controllers");
+const { getUsers } = require("./controllers/users.controllers");
 //app.use(express.json())
 
 app.get("/api/topics", getTopics);
 app.get("/api/articles/:article_id", getArticleByID);
+app.get("/api/users", getUsers);
 
 //error handling:
 app.all("/*", (req, res) => {

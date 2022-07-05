@@ -60,13 +60,35 @@ describe("4. GET /api/articles/:article_id", () => {
         expect(body.msg).toBe("Invalid input");
       });
   });
-  test.only("status:404, responds with an error message when article id doesn't exist", () => {
+  test("status:404, responds with an error message when article id doesn't exist", () => {
     const article_id = 9999;
     return request(app)
       .get(`/api/articles${article_id}`)
       .expect(404)
       .then(({ body }) => {
         expect(body.msg).toBe("Route not found");
+      });
+  });
+});
+
+describe("6. GET /api/users", () => {
+  test("status: 200, responds with an array of user objects", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const { users } = body;
+        expect(users.length).toBe(4);
+        expect(users).toBeInstanceOf(Array);
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
+        });
       });
   });
 });

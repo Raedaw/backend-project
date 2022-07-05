@@ -92,6 +92,28 @@ describe("5. PATCH /api/articles/:article_id", () => {
         });
       });
   });
+  test("status: 400, responds with error message when missing required fields ", () => {
+    const article_ID = 1;
+    const addVotes = {};
+    return request(app)
+      .patch(`/api/articles/${article_ID}`)
+      .send(addVotes)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(`Missing required fields`);
+      });
+  });
+  test("status: 400, responds with error message when passed an invalid input", () => {
+    const article_ID = 1;
+    const addVotes = { inc_votes: "eleven" };
+    return request(app)
+      .patch(`/api/articles/${article_ID}`)
+      .send(addVotes)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(`Invalid input`);
+      });
+  });
 });
 
 describe("Errors", () => {

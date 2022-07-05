@@ -13,10 +13,9 @@ exports.getArticleByID = (req, res, next) => {
     .catch(next);
 };
 
-exports.patchArticleVotes = (req, res) => {
+exports.patchArticleVotes = (req, res, next) => {
   const { article_id } = req.params;
-  updateArticleVotes(article_id, req.body).then((article) => {
-    //console.log(article);
-    res.status(200).send({ article });
-  });
+  updateArticleVotes(article_id, req.body)
+    .then((article) => res.status(200).send({ article }))
+    .catch(next);
 };

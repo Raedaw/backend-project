@@ -21,8 +21,22 @@ exports.updateArticleVotes = (article_id, votesObj) => {
   return db
     .query("SELECT * FROM articles WHERE article_id = $1;", [article_id])
     .then((result) => {
+      //console.log();
+      if (!votesObj.hasOwnProperty("inc_votes")) {
+        return Promise.reject({
+          status: 400,
+          msg: `Missing required fields`,
+        });
+      }
+      if (typeof votesObj.inc_votes !== "number") {
+        return Promise.reject({
+          status: 400,
+          msg: `Invalid input`,
+        });
+      }
       const article = result.rows[0];
       article.votes += newVotes;
       return article;
     });
 };
+//

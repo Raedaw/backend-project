@@ -64,10 +64,77 @@ describe("4. GET /api/articles/:article_id", () => {
   test("status:404, responds with an error message when article id doesn't exist", () => {
     const article_id = 9999;
     return request(app)
-      .get(`/api/articles${article_id}`)
+      .get(`/api/articles/${article_id}`)
       .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(`article ID ${article_id} does not exist`);
+      });
+  });
+});
+
+describe("5. PATCH /api/articles/:article_id", () => {
+  test("status:200, responds with the updated article", () => {
+    const newVote = 10;
+    const article_ID = 1;
+    const addVotes = { inc_votes: newVote };
+    return request(app)
+      .patch(`/api/articles/${article_ID}`)
+      .send(addVotes)
+      .expect(200)
       .then(({ body }) => {
-        expect(body.msg).toBe("Route not found");
+        expect(body.article).toEqual({
+          article_id: article_ID,
+          title: "Living in the shadow of a great man",
+          topic: "mitch",
+          author: "butter_bridge",
+          body: "I find this existence challenging",
+          created_at: "2020-07-09T20:11:00.000Z",
+          votes: 110,
+        });
+      });
+  });
+  test("status: 400, responds with error message when missing required fields ", () => {
+    const article_ID = 1;
+    const addVotes = {};
+    return request(app)
+      .patch(`/api/articles/${article_ID}`)
+      .send(addVotes)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(`Missing required fields`);
+      });
+  });
+  test("status: 400, responds with error message when passed an invalid input", () => {
+    const article_ID = 1;
+    const addVotes = { inc_votes: "eleven" };
+    return request(app)
+      .patch(`/api/articles/${article_ID}`)
+      .send(addVotes)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(`Invalid input`);
+      });
+  });
+});
+
+describe("6. GET /api/users", () => {
+  test("status: 200, responds with an array of user objects", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const { users } = body;
+        expect(users.length).toBe(4);
+        expect(users).toBeInstanceOf(Array);
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
+        });
       });
   });
 });

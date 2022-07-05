@@ -44,6 +44,7 @@ describe("4. GET /api/articles/:article_id", () => {
       body: "some gifs",
       created_at: new Date(1604394720000).toISOString(),
       votes: 0,
+      comment_count: "2",
     };
     return request(app)
       .get(`/api/articles/${article_ID}`)
@@ -60,7 +61,7 @@ describe("4. GET /api/articles/:article_id", () => {
         expect(body.msg).toBe("Invalid input");
       });
   });
-  test.only("status:404, responds with an error message when article id doesn't exist", () => {
+  test("status:404, responds with an error message when article id doesn't exist", () => {
     const article_id = 9999;
     return request(app)
       .get(`/api/articles${article_id}`)

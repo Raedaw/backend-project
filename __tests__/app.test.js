@@ -44,6 +44,7 @@ describe("4. GET /api/articles/:article_id", () => {
       body: "some gifs",
       created_at: new Date(1604394720000).toISOString(),
       votes: 0,
+      comment_count: "2",
     };
     return request(app)
       .get(`/api/articles/${article_ID}`)

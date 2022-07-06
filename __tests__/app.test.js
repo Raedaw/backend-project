@@ -181,6 +181,7 @@ describe("9. GET /api/articles/:article_id/comments", () => {
           expect(comment).toHaveProperty("author");
           expect(comment).toHaveProperty("body");
           expect(comment).toHaveProperty("article_id");
+          expect(comment.article_id).toBe(article_ID);
         });
       });
   });

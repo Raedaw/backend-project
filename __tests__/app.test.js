@@ -180,6 +180,7 @@ describe("9. GET /api/articles/:article_id/comments", () => {
           expect(comment).toHaveProperty("created_at");
           expect(comment).toHaveProperty("author");
           expect(comment).toHaveProperty("body");
+          expect(comment).toHaveProperty("article_id");
         });
       });
   });
@@ -202,6 +203,15 @@ describe("9. GET /api/articles/:article_id/comments", () => {
         //console.log(comments);
         expect(comments.length).toBe(0);
         expect(comments).toBeInstanceOf(Array);
+      });
+  });
+  test("status:400, responds with an error message when passed an invalid id", () => {
+    const article_id = "banana";
+    return request(app)
+      .get(`/api/articles/${article_id}/comments`)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(`Invalid input`);
       });
   });
 });

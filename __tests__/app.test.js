@@ -158,21 +158,30 @@ describe("8. GET /api/articles", () => {
           expect(article).toHaveProperty("votes");
           expect(article).toHaveProperty("comment_count");
           expect(article).toHaveProperty("author");
-          // expect(article).toEqual(
-
-          //   // expect.objectContaining({
-          //   //   title: expect.any(String),
-          //   //   article_id: expect.any(Number),
-          //   //   topic: expect.any(String),
-          //   //   created_at: expect.any(String),
-          //   //   votes: expect.any(Number),
-          //   //   comment_count: expect.any(Number),
-          //   // })
-          // );
         });
       });
   });
 });
+
+// describe("10. POST /api/articles/:article_id/comments", () => {
+//   test("status 201: responds with posted comment", () => {
+//     const newComment = {
+//       username: "icellusedkars",
+//       body: "Awesome post!",
+//     };
+//     const article_id = 3;
+//     return request(app)
+//       .post("/api/articles/:article_id/comments")
+//       .expect(201)
+//       .send(newComment)
+//       .then(({ body }) => {
+//         expect(body.comment).toEqual({
+//           comment_id: 3,
+//           ...newComment,
+//         });
+//       });
+//   });
+// });
 
 describe("Errors", () => {
   test("status:404, responds with error message when passed an invalid route", () => {

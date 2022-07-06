@@ -64,3 +64,16 @@ exports.fetchArticleComments = (article_id) => {
       return comment;
     });
 };
+
+exports.addComment = (articleid, newComment) => {
+  const { username, body } = newComment;
+  console.log(username);
+  return db
+    .query(
+      "INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *;",
+      [username, body, articleid]
+    )
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};

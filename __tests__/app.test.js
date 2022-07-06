@@ -217,25 +217,29 @@ describe("9. GET /api/articles/:article_id/comments", () => {
   });
 });
 
-// describe("10. POST /api/articles/:article_id/comments", () => {
-//   test("status 201: responds with posted comment", () => {
-//     const newComment = {
-//       username: "icellusedkars",
-//       body: "Awesome post!",
-//     };
-//     const article_id = 3;
-//     return request(app)
-//       .post("/api/articles/:article_id/comments")
-//       .expect(201)
-//       .send(newComment)
-//       .then(({ body }) => {
-//         expect(body.comment).toEqual({
-//           comment_id: 3,
-//           ...newComment,
-//         });
-//       });
-//   });
-// });
+describe("10. POST /api/articles/:article_id/comments", () => {
+  test("status 201: responds with posted comment", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "Awesome post!",
+    };
+    const article_id = 3;
+    return request(app)
+      .post(`/api/articles/${article_id}/comments`)
+      .expect(201)
+      .send(newComment)
+      .then(({ body: { comment } }) => {
+        expect(comment).toBeInstanceOf(Object);
+        expect(comment).toHaveProperty("comment_id");
+        expect(comment).toHaveProperty("votes");
+        expect(comment).toHaveProperty("created_at");
+        expect(comment).toHaveProperty("author");
+        expect(comment).toHaveProperty("body");
+        expect(comment).toHaveProperty("article_id");
+        expect(comment.article_id).toBe(article_id);
+      });
+  });
+});
 
 describe("Errors", () => {
   test("status:404, responds with error message when passed an invalid route", () => {

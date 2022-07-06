@@ -158,18 +158,50 @@ describe("8. GET /api/articles", () => {
           expect(article).toHaveProperty("votes");
           expect(article).toHaveProperty("comment_count");
           expect(article).toHaveProperty("author");
-          // expect(article).toEqual(
-
-          //   // expect.objectContaining({
-          //   //   title: expect.any(String),
-          //   //   article_id: expect.any(Number),
-          //   //   topic: expect.any(String),
-          //   //   created_at: expect.any(String),
-          //   //   votes: expect.any(Number),
-          //   //   comment_count: expect.any(Number),
-          //   // })
-          // );
         });
+      });
+  });
+});
+
+describe("9. GET /api/articles/:article_id/comments", () => {
+  test("returns an array of comments for given article id", () => {
+    const article_ID = 9;
+    return request(app)
+      .get(`/api/articles/${article_ID}/comments`)
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        expect(comments.length).toBe(2);
+        expect(comments).toBeInstanceOf(Array);
+        comments.forEach((comment) => {
+          expect(comment).toBeInstanceOf(Object);
+          expect(comment).toHaveProperty("comment_id");
+          expect(comment).toHaveProperty("votes");
+          expect(comment).toHaveProperty("created_at");
+          expect(comment).toHaveProperty("author");
+          expect(comment).toHaveProperty("body");
+        });
+      });
+  });
+  test("status:404, responds with an error message when article id doesn't exist", () => {
+    const article_id = 999;
+    return request(app)
+      .get(`/api/articles/${article_id}/comments`)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(`article ID ${article_id} does not exist`);
+      });
+  });
+  test("status:200, responds with an empty array when article exists but has no comments", () => {
+    const article_id = 2;
+    return request(app)
+      .get(`/api/articles/${article_id}/comments`)
+      .expect(200)
+      .then(({ body }) => {
+        const { comments } = body;
+        //console.log(comments);
+        expect(comments.length).toBe(0);
+        expect(comments).toBeInstanceOf(Array);
       });
   });
 });

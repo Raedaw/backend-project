@@ -1,4 +1,5 @@
 //const db = require("../db/data");
+const { checkArticleExists } = require("../db/helpers/utils");
 const {
   fetchArticleByID,
   updateArticleVotes,
@@ -38,9 +39,7 @@ exports.getArticleComments = (req, res, next) => {
 
 exports.postComment = (req, res, next) => {
   const { article_id } = req.params;
-  console.log(req.params);
-  addComment(article_id, req.body).then((comment) =>
-    res.status(201).send({ comment })
-  );
-  //.catch(next);
+  addComment(article_id, req.body)
+    .then((comment) => res.status(201).send({ comment }))
+    .catch(next);
 };

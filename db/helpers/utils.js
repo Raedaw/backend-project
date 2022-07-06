@@ -24,17 +24,16 @@ exports.formatComments = (comments, idLookup) => {
   });
 };
 
-exports.checkArticleExists = async (article_id) => {
-  const dbOutput = await db.query(
-    "SELECT *FROM articles WHERE article_id = $1;",
-    [article_id]
-  );
-
-  if (dbOutput.rows.length === 0) {
-    return Promise.reject({
-      status: 404,
-      msg: `article ID ${article_id} does not exist`,
+exports.checkArticleExists = (article_id) => {
+  return db
+    .query("SELECT * FROM articles WHERE article_id = $1;", [article_id])
+    .then((article) => {
+      //console.log(article);
+      if (article.rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: `article ID ${article_id} does not exist`,
+        });
+      }
     });
-  }
-  return;
 };

@@ -237,7 +237,49 @@ describe("10. POST /api/articles/:article_id/comments", () => {
         expect(comment).toHaveProperty("body");
         expect(comment).toHaveProperty("article_id");
         expect(comment.article_id).toBe(article_id);
+        expect(comment.author).toBe(newComment.username);
         expect(comment.body).toBe(newComment.body);
+      });
+  });
+  test("status:404, responds with an error message when article id doesn't exist", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "Awesome post!",
+    };
+    const article_id = 999;
+    return request(app)
+      .post(`/api/articles/${article_id}/comments`)
+      .expect(404)
+      .send(newComment)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(`article ID does not exist`);
+      });
+  });
+  test("status:400, responds with an error message when passed an invalid input", () => {
+    const newComment = {
+      username: "icellusedkars",
+    };
+    const article_id = 3;
+    return request(app)
+      .post(`/api/articles/${article_id}/comments`)
+      .expect(400)
+      .send(newComment)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid input");
+      });
+  });
+  test("status:400, responds with an error message when passed an invalid input as article id", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "Awesome post!",
+    };
+    const article_id = "banana";
+    return request(app)
+      .post(`/api/articles/${article_id}/comments`)
+      .expect(400)
+      .send(newComment)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid input");
       });
   });
 });

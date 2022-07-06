@@ -65,15 +65,18 @@ exports.fetchArticleComments = (article_id) => {
     });
 };
 
-exports.addComment = (articleid, newComment) => {
+exports.addComment = (article_id, newComment) => {
   const { username, body } = newComment;
-  console.log(username);
+
   return db
     .query(
       "INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *;",
-      [username, body, articleid]
+      [username, body, article_id]
     )
-    .then(({ rows }) => {
-      return rows[0];
+    .then((result) => {
+      return Promise.all([result.rows[0], checkArticleExists(article_id)]);
+    })
+    .then(([comment, error]) => {
+      return comment;
     });
 };

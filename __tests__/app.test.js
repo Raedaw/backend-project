@@ -237,6 +237,7 @@ describe("10. POST /api/articles/:article_id/comments", () => {
         expect(comment).toHaveProperty("body");
         expect(comment).toHaveProperty("article_id");
         expect(comment.article_id).toBe(article_id);
+        expect(comment.body).toBe(newComment.body);
       });
   });
 });

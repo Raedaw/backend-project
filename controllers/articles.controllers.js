@@ -29,11 +29,9 @@ exports.patchArticleVotes = (req, res, next) => {
     .catch(next);
 };
 
-exports.getArticleComments = async (req, res, next) => {
+exports.getArticleComments = (req, res, next) => {
   const { article_id } = req.params;
-  const comments = await fetchArticleComments(article_id)
-    .then((comments) => {
-      res.status(200).send({ comments });
-    })
+  fetchArticleComments(article_id)
+    .then((comments) => res.status(200).send({ comments }))
     .catch(next);
 };

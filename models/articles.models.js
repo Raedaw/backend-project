@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const { checkArticleExists } = require("../db/helpers/utils");
 
 exports.selectArticles = () => {
   return db
@@ -17,8 +18,6 @@ exports.fetchArticleByID = (article_id) => {
       [article_id]
     )
     .then((result) => {
-      //console.log(result.rows);
-
       if (result.rows.length === 0) {
         return Promise.reject({
           status: 404,
@@ -34,7 +33,6 @@ exports.updateArticleVotes = (article_id, votesObj) => {
   return db
     .query("SELECT * FROM articles WHERE article_id = $1;", [article_id])
     .then((result) => {
-      //console.log();
       if (!votesObj.hasOwnProperty("inc_votes")) {
         return Promise.reject({
           status: 400,
@@ -50,5 +48,19 @@ exports.updateArticleVotes = (article_id, votesObj) => {
       const article = result.rows[0];
       article.votes += newVotes;
       return article;
+    });
+};
+
+exports.fetchArticleComments = (article_id) => {
+  return db
+    .query(
+      "SELECT comment_id, votes, created_at, author, body, article_id FROM comments WHERE article_id = $1;",
+      [article_id]
+    )
+    .then((result) => {
+      return Promise.all([result.rows, checkArticleExists(article_id)]);
+    })
+    .then(([comment, error]) => {
+      return comment;
     });
 };

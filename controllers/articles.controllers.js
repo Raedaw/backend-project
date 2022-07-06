@@ -3,6 +3,8 @@ const {
   fetchArticleByID,
   updateArticleVotes,
   selectArticles,
+  fetchArticleComments,
+  checkArticleExists,
 } = require("../models/articles.models");
 
 exports.getArticles = (req, res) => {
@@ -24,5 +26,12 @@ exports.patchArticleVotes = (req, res, next) => {
   const { article_id } = req.params;
   updateArticleVotes(article_id, req.body)
     .then((article) => res.status(200).send({ article }))
+    .catch(next);
+};
+
+exports.getArticleComments = (req, res, next) => {
+  const { article_id } = req.params;
+  fetchArticleComments(article_id)
+    .then((comments) => res.status(200).send({ comments }))
     .catch(next);
 };

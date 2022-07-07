@@ -42,6 +42,12 @@ exports.checkExists = (table, column, value) => {
   const queryStr = format("SELECT * FROM %I WHERE %I = $1;", table, column);
 
   return db.query(queryStr, [value]).then((result) => {
+    if (column === "slug") {
+      if (result.rows.length === 0 && value) {
+        return Promise.reject({ status: 404, msg: `topic does not exist` });
+      }
+    }
+
     if (result.rows.length === 0 && value) {
       return Promise.reject({ status: 404, msg: `${column} does not exist` });
     }
@@ -55,3 +61,5 @@ exports.checkExists = (table, column, value) => {
 //   // }
 //   // return;
 // };
+
+// SELECT articles.author, articles.article_id, articles.title, articles.topic, articles.created_at, articles.votes,   COUNT(comments.comment_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id WHERE articles.topic = 'cats' GROUP BY articles.article_id ORDER BY article_id DESC;

@@ -16,24 +16,34 @@ exports.selectArticles = (sort_by = "created_at", order = "DESC", topic) => {
     "comment_count",
   ];
   const validOrderOptions = ["ASC", "DESC"];
-  const validTopics = ["mitch", "cats"];
-  console.log(!validSortOptions.includes(sort_by));
+
   if (!validSortOptions.includes(sort_by)) {
-    return Promise.reject({ status: 404, msg: `${sort_by} does not exist` });
+    return Promise.reject({
+      status: 400,
+      msg: `${sort_by} is not a valid sort by option`,
+    });
+  }
+
+  if (!validOrderOptions.includes(order)) {
+    return Promise.reject({ status: 400, msg: `invalid 'order by' input` });
   }
 
   let topicStr = "";
   if (topic !== undefined) {
     topicStr = `WHERE articles.topic = '${topic}' `;
   }
-  return db
-    .query(
-      `SELECT articles.author, articles.article_id, articles.title, articles.topic, articles.created_at, articles.votes, articles.body, COUNT(comments.comment_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id ${topicStr}GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`
-    ) /// make sure to fix sql injection^
-    .then((result) => {
-      //console.log(result.rows);
-      return result.rows;
-    });
+  const checkTopicExists = checkExists("topics", "slug", topic);
+
+  return checkTopicExists.then(() => {
+    return db
+      .query(
+        `SELECT articles.author, articles.article_id, articles.title, articles.topic, articles.created_at, articles.votes, articles.body, COUNT(comments.comment_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id ${topicStr}GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`
+      ) /// make sure to fix sql injection^
+      .then((result) => {
+        //console.log(result.rows);
+        return result.rows;
+      });
+  });
 };
 
 exports.fetchArticleByID = (article_id) => {

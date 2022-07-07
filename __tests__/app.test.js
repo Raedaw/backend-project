@@ -451,25 +451,54 @@ describe("11. GET /api/articles (queries)", () => {
       });
   });
   describe("error handling", () => {
-    test.only("status:404, responds with an error message when column doesn't exist in database", () => {
+    test("status:400, responds with an error message when column not valid", () => {
       const sortByColumn = "im_not_real";
       return request(app)
         .get(`/api/articles?sort_by=${sortByColumn}`)
-        .expect(404)
+        .expect(400)
         .then(({ body: { msg } }) => {
-          expect(msg).toBe(`${sortByColumn} does not exist`);
+          expect(msg).toBe(`${sortByColumn} is not a valid sort by option`);
         });
     });
   });
-});
-
-describe("Errors", () => {
-  test("status:404, responds with error message when passed an invalid route", () => {
+  test("status:400, responds with an error message when passed order isn't ASC or DESC", () => {
+    const sortByColumn = "votes";
     return request(app)
-      .get("/api/toopics")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Route not found");
+      .get(`/api/articles?sort_by=${sortByColumn}&order=PASTA`)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(`invalid 'order by' input`);
       });
+  });
+  test("status:404, responds with an error message when topic doesn't exist in the database", () => {
+    const topic = "unicorns";
+    return request(app)
+      .get(`/api/articles?topic=${topic}`)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(`topic does not exist`);
+      });
+  });
+  test("status:200, responds with an empty message when topic exists in the database but not the article", () => {
+    const topic = "paper";
+    return request(app)
+      .get(`/api/articles?topic=${topic}`)
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles.length).toBe(0);
+        expect(articles).toBeInstanceOf(Array);
+      });
+  });
+
+  describe("Errors", () => {
+    test("status:404, responds with error message when passed an invalid route", () => {
+      return request(app)
+        .get("/api/toopics")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Route not found");
+        });
+    });
   });
 });

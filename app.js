@@ -16,6 +16,7 @@ const {
   handle500,
   handleInvalidInput,
   handleCustomErrors,
+  handleArticle404,
 } = require("./error-handling");
 app.use(express.json());
 
@@ -34,7 +35,7 @@ app.use("*", handleInvalidPaths);
 
 app.use(handleCustomErrors);
 app.use(handleInvalidInput);
-
+app.use(handleArticle404);
 app.use(handle500);
 
 module.exports = app;

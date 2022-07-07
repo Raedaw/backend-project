@@ -37,3 +37,21 @@ exports.checkArticleExists = (article_id) => {
       }
     });
 };
+
+exports.checkExists = (table, column, value) => {
+  const queryStr = format("SELECT * FROM %I WHERE %I = $1;", table, column);
+
+  return db.query(queryStr, [value]).then((result) => {
+    if (result.rows.length === 0 && value) {
+      return Promise.reject({ status: 404, msg: `${column} does not exist` });
+    }
+  });
+};
+
+// exports.checkValidArticleID = (article_id) => {
+//   console.log(article_id.match(/^[\d]+/g));
+//   // {
+//   //   return Promise.reject({ status: 400, msg: `Invalid article ID` });
+//   // }
+//   // return;
+// };

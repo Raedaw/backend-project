@@ -39,7 +39,11 @@ exports.getArticleComments = (req, res, next) => {
 
 exports.postComment = (req, res, next) => {
   const { article_id } = req.params;
+  // console.log(article_id.match(/^[\d]+/g) === null);
+
   addComment(article_id, req.body)
-    .then((comment) => res.status(201).send({ comment }))
+    .then((comment) => {
+      res.status(201).send({ comment });
+    })
     .catch(next);
 };

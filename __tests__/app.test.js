@@ -217,7 +217,7 @@ describe("9. GET /api/articles/:article_id/comments", () => {
   });
 });
 
-xdescribe("10. POST /api/articles/:article_id/comments", () => {
+describe("10. POST /api/articles/:article_id/comments", () => {
   test("status 201: responds with posted comment", () => {
     const newComment = {
       username: "icellusedkars",
@@ -251,7 +251,7 @@ xdescribe("10. POST /api/articles/:article_id/comments", () => {
       .expect(404)
       .send(newComment)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe(`article ID does not exist`);
+        expect(msg).toBe(`article_id does not exist`);
       });
   });
   test("status:400, responds with an error message when body is missing from new comment", () => {
@@ -305,7 +305,7 @@ xdescribe("10. POST /api/articles/:article_id/comments", () => {
       .expect(404)
       .send(newComment)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe(`Username does not exist`);
+        expect(msg).toBe(`username does not exist`);
       });
   });
 });

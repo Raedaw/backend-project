@@ -217,6 +217,99 @@ describe("9. GET /api/articles/:article_id/comments", () => {
   });
 });
 
+describe("10. POST /api/articles/:article_id/comments", () => {
+  test("status 201: responds with posted comment", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "Awesome post!",
+    };
+    const article_id = 3;
+
+    return request(app)
+      .post(`/api/articles/${article_id}/comments`)
+      .expect(201)
+      .send(newComment)
+      .then(({ body: { comment } }) => {
+        expect(comment).toEqual({
+          comment_id: 19,
+          body: newComment.body,
+          article_id: article_id,
+          author: newComment.username,
+          votes: 0,
+          created_at: expect.any(String),
+        });
+      });
+  });
+  test("status:404, responds with an error message when article id doesn't exist", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "Awesome post!",
+    };
+    const article_id = 999;
+    return request(app)
+      .post(`/api/articles/${article_id}/comments`)
+      .expect(404)
+      .send(newComment)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(`article_id does not exist`);
+      });
+  });
+  test("status:400, responds with an error message when body is missing from new comment", () => {
+    const newComment = {
+      username: "icellusedkars",
+    };
+    const article_id = 3;
+    return request(app)
+      .post(`/api/articles/${article_id}/comments`)
+      .expect(400)
+      .send(newComment)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid input");
+      });
+  });
+  test("status:400, responds with an error message when username is missing from new comment", () => {
+    const newComment = {
+      body: "who am I?",
+    };
+    const article_id = 3;
+    return request(app)
+      .post(`/api/articles/${article_id}/comments`)
+      .expect(400)
+      .send(newComment)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid input");
+      });
+  });
+  test("status:400, responds with an error message when passed an invalid input as article id", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "Awesome post!",
+    };
+    const article_id = "banana";
+    return request(app)
+      .post(`/api/articles/${article_id}/comments`)
+      .expect(400)
+      .send(newComment)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid article ID");
+      });
+  });
+  test("status:404, responds with an error message when username doesn't exist in the database", () => {
+    const newComment = {
+      username: "santa",
+      body: "Awesome post!",
+    };
+    const article_id = 1;
+    return request(app)
+      .post(`/api/articles/${article_id}/comments`)
+      .expect(404)
+      .send(newComment)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe(`username does not exist`);
+      });
+  });
+});
+
 describe("Errors", () => {
   test("status:404, responds with error message when passed an invalid route", () => {
     return request(app)

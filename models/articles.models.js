@@ -1,5 +1,9 @@
 const db = require("../db/connection");
-const { checkArticleExists } = require("../db/helpers/utils");
+const {
+  checkArticleExists,
+  checkExists,
+  checkValidArticleID,
+} = require("../db/helpers/utils");
 
 exports.selectArticles = () => {
   return db
@@ -63,4 +67,23 @@ exports.fetchArticleComments = (article_id) => {
     .then(([comment, error]) => {
       return comment;
     });
+};
+
+exports.addComment = (article_id, newComment) => {
+  const { username, body } = newComment;
+  if (article_id.match(/^[\d]+/g) === null) {
+    return Promise.reject({ status: 400, msg: `Invalid article ID` });
+  }
+  const usernameExists = checkExists("users", "username", username);
+  const articleExists = checkExists("articles", "article_id", article_id);
+  return Promise.all([usernameExists, articleExists]).then(() => {
+    return db
+      .query(
+        "INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *;",
+        [username, body, article_id]
+      )
+      .then((result) => {
+        return result.rows[0];
+      });
+  });
 };

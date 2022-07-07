@@ -9,12 +9,14 @@ const {
   patchArticleVotes,
   getArticles,
   getArticleComments,
+  postComment,
 } = require("./controllers/articles.controllers");
 const {
   handleInvalidPaths,
   handle500,
   handleInvalidInput,
   handleCustomErrors,
+  handleArticle404,
 } = require("./error-handling");
 app.use(express.json());
 
@@ -25,6 +27,7 @@ app.get("/api/users", getUsers);
 app.get("/api/articles/:article_id/comments", getArticleComments);
 
 app.patch("/api/articles/:article_id", patchArticleVotes);
+app.post("/api/articles/:article_id/comments", postComment);
 
 //error handling:
 
@@ -32,7 +35,7 @@ app.use("*", handleInvalidPaths);
 
 app.use(handleCustomErrors);
 app.use(handleInvalidInput);
-
+app.use(handleArticle404);
 app.use(handle500);
 
 module.exports = app;

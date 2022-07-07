@@ -5,14 +5,28 @@ const {
   checkValidArticleID,
 } = require("../db/helpers/utils");
 
-exports.selectArticles = (sort_by = "created_at") => {
-  const validSortOptions = ["created_at"];
+exports.selectArticles = (sort_by = "created_at", order = "DESC", topic) => {
+  const validSortOptions = [
+    "created_at",
+    "article_id",
+    "author",
+    "title",
+    "topic",
+    "votes",
+    "comment_count",
+  ];
+  const validOrderOptions = ["ASC", "DESC"];
+  const validTopics = ["mitch", "cats"];
+  let topicStr = "";
+  if (topic !== undefined) {
+    topicStr = `WHERE articles.topic = '${topic}' `;
+  }
   return db
     .query(
-      " SELECT articles.author, articles.article_id, articles.title, articles.topic, articles.created_at, articles.votes,   COUNT(comments.comment_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY $1;",
-      [sort_by]
+      `SELECT articles.author, articles.article_id, articles.title, articles.topic, articles.created_at, articles.votes, articles.body, COUNT(comments.comment_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id ${topicStr}GROUP BY articles.article_id ORDER BY ${sort_by} ${order};`
     ) /// make sure to fix sql injection^
     .then((result) => {
+      //console.log(result.rows);
       return result.rows;
     });
 };

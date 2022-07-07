@@ -141,7 +141,7 @@ describe("6. GET /api/users", () => {
 });
 
 describe("8. GET /api/articles", () => {
-  xtest("status:200, responds with an array of article objects", () => {
+  test("status:200, responds with an array of article objects", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -149,7 +149,7 @@ describe("8. GET /api/articles", () => {
         const { articles } = body;
         expect(articles.length).toBe(12);
         expect(articles).toBeInstanceOf(Array);
-        expect(articles).toBeSortedBy("created_at");
+        expect(articles).toBeSortedBy("created_at", { descending: true });
         articles.forEach((article) => {
           expect(article).toHaveProperty("title");
           expect(article).toHaveProperty("article_id");
@@ -310,7 +310,7 @@ describe("10. POST /api/articles/:article_id/comments", () => {
   });
 });
 
-xdescribe("11. GET /api/articles (queries)", () => {
+describe("11. GET /api/articles (queries)", () => {
   describe("sort_by sorts articles by any valid column by descending order by default", () => {
     test("sorts by date by default", () => {
       return request(app)
@@ -320,13 +320,27 @@ xdescribe("11. GET /api/articles (queries)", () => {
           const { articles } = body;
           expect(articles.length).toBe(12);
           expect(articles).toBeInstanceOf(Array);
-          expect(articles).toBeSortedBy("created_at");
+          //console.log(articles);
+          expect(articles).toBeSortedBy("created_at", {
+            descending: true,
+            //coerce: true,
+          });
+          expect(articles[0]).toEqual({
+            article_id: 3,
+            title: "Eight pug gifs that remind me of mitch",
+            topic: "mitch",
+            author: "icellusedkars",
+            body: "some gifs",
+            created_at: new Date(1604394720000).toISOString(),
+            votes: 0,
+            comment_count: "2",
+          });
         });
     });
     test("200: accepts sort_by query with article_id ", () => {
       const sortByColumn = "article_id";
       return request(app)
-        .get(`/api/articles/sort_by=${sortByColumn}`)
+        .get(`/api/articles?sort_by=${sortByColumn}`)
         .expect(200)
         .then(({ body }) => {
           const { articles } = body;
@@ -337,15 +351,105 @@ xdescribe("11. GET /api/articles (queries)", () => {
           });
         });
     });
-    // test("200: accepts sort_by query with votes", () => {});
-    // test("200: accepts sort_by query with title", () => {});
-    // test("200: accepts sort_by query with topic", () => {});
-    // test("200: accepts sort_by query with author", () => {});
+    test("200: accepts sort_by query with votes", () => {
+      const sortByColumn = "votes";
+      return request(app)
+        .get(`/api/articles?sort_by=${sortByColumn}`)
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles.length).toBe(12);
+          expect(articles).toBeInstanceOf(Array);
+          expect(articles).toBeSortedBy(sortByColumn, {
+            descending: true,
+            coerce: true,
+          });
+        });
+    });
+    test("200: accepts sort_by query with title", () => {
+      const sortByColumn = "title";
+      return request(app)
+        .get(`/api/articles?sort_by=${sortByColumn}`)
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles.length).toBe(12);
+          expect(articles).toBeInstanceOf(Array);
+          expect(articles).toBeSortedBy(sortByColumn, {
+            descending: true,
+          });
+        });
+    });
+    test("200: accepts sort_by query with topic", () => {
+      const sortByColumn = "topic";
+      return request(app)
+        .get(`/api/articles?sort_by=${sortByColumn}`)
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles.length).toBe(12);
+          expect(articles).toBeInstanceOf(Array);
+          expect(articles).toBeSortedBy(sortByColumn, {
+            descending: true,
+          });
+        });
+    });
+    test("200: accepts sort_by query with author", () => {
+      const sortByColumn = "author";
+      return request(app)
+        .get(`/api/articles?sort_by=${sortByColumn}`)
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles.length).toBe(12);
+          expect(articles).toBeInstanceOf(Array);
+          expect(articles).toBeSortedBy(sortByColumn, {
+            descending: true,
+          });
+        });
+    });
+    test("200: accepts sort_by query with comment_count", () => {
+      const sortByColumn = "comment_count";
+      return request(app)
+        .get(`/api/articles?sort_by=${sortByColumn}`)
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles.length).toBe(12);
+          expect(articles).toBeInstanceOf(Array);
+          expect(articles).toBeSortedBy(sortByColumn, {
+            descending: true,
+            coerce: true,
+          });
+        });
+    });
+    test("sorts by ascending order when specified", () => {
+      const sortByColumn = "article_id";
+      return request(app)
+        .get(`/api/articles?sort_by=${sortByColumn}&order=ASC`)
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles.length).toBe(12);
+          expect(articles).toBeInstanceOf(Array);
+          expect(articles).toBeSortedBy(sortByColumn, {
+            coerce: true,
+          });
+        });
+    });
   });
-  // describe("order by asc/desc", () => {
-  //   test("sorts by ascending order when specified", () => {});
-  // });
-  // describe("filters articles by the topic value specified in the query", () => {});
+  test("filters articles by the topic value specified in the query ", () => {
+    const topic = "cats";
+    return request(app)
+      .get(`/api/articles?topic=${topic}`)
+      .expect(200)
+      .then(({ body }) => {
+        const { articles } = body;
+        expect(articles.length).toBe(1);
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles[0].topic).toBe(topic);
+      });
+  });
 });
 
 describe("Errors", () => {

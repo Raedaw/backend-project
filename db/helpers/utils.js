@@ -24,17 +24,34 @@ exports.formatComments = (comments, idLookup) => {
   });
 };
 
-exports.checkArticleExists = async (article_id) => {
-  const dbOutput = await db.query(
-    "SELECT *FROM articles WHERE article_id = $1;",
-    [article_id]
-  );
-
-  if (dbOutput.rows.length === 0) {
-    return Promise.reject({
-      status: 404,
-      msg: `article ID ${article_id} does not exist`,
+exports.checkArticleExists = (article_id) => {
+  return db
+    .query("SELECT * FROM articles WHERE article_id = $1;", [article_id])
+    .then((article) => {
+      //console.log(article);
+      if (article.rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: `article ID ${article_id} does not exist`,
+        });
+      }
     });
-  }
-  return;
 };
+
+exports.checkExists = (table, column, value) => {
+  const queryStr = format("SELECT * FROM %I WHERE %I = $1;", table, column);
+
+  return db.query(queryStr, [value]).then((result) => {
+    if (result.rows.length === 0 && value) {
+      return Promise.reject({ status: 404, msg: `${column} does not exist` });
+    }
+  });
+};
+
+// exports.checkValidArticleID = (article_id) => {
+//   console.log(article_id.match(/^[\d]+/g));
+//   // {
+//   //   return Promise.reject({ status: 400, msg: `Invalid article ID` });
+//   // }
+//   // return;
+// };

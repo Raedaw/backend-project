@@ -1,11 +1,13 @@
 const db = require("../db/connection");
 const { checkArticleExists } = require("../db/helpers/utils");
 
-exports.selectArticles = () => {
+exports.selectArticles = (sort_by = "created_at") => {
+  const validSortOptions = ["created_at"];
   return db
     .query(
-      " SELECT articles.author, articles.article_id, articles.title, articles.topic, articles.created_at, articles.votes,   COUNT(comments.comment_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY created_at;"
-    )
+      " SELECT articles.author, articles.article_id, articles.title, articles.topic, articles.created_at, articles.votes,   COUNT(comments.comment_id) AS comment_count FROM articles LEFT JOIN comments ON comments.article_id = articles.article_id GROUP BY articles.article_id ORDER BY $1;",
+      [sort_by]
+    ) /// make sure to fix sql injection^
     .then((result) => {
       return result.rows;
     });

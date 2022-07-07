@@ -141,7 +141,7 @@ describe("6. GET /api/users", () => {
 });
 
 describe("8. GET /api/articles", () => {
-  test("status:200, responds with an array of article objects", () => {
+  xtest("status:200, responds with an array of article objects", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -215,6 +215,44 @@ describe("9. GET /api/articles/:article_id/comments", () => {
         expect(msg).toBe(`Invalid input`);
       });
   });
+});
+
+xdescribe("11. GET /api/articles (queries)", () => {
+  describe("sort_by sorts articles by any valid column by descending order by default", () => {
+    test("sorts by date by default", () => {
+      return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles.length).toBe(12);
+          expect(articles).toBeInstanceOf(Array);
+          expect(articles).toBeSortedBy("created_at");
+        });
+    });
+    test("200: accepts sort_by query with article_id ", () => {
+      const sortByColumn = "article_id";
+      return request(app)
+        .get(`/api/articles/sort_by=${sortByColumn}`)
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles.length).toBe(12);
+          expect(articles).toBeInstanceOf(Array);
+          expect(articles).toBeSortedBy(sortByColumn, {
+            descending: true,
+          });
+        });
+    });
+    // test("200: accepts sort_by query with votes", () => {});
+    // test("200: accepts sort_by query with title", () => {});
+    // test("200: accepts sort_by query with topic", () => {});
+    // test("200: accepts sort_by query with author", () => {});
+  });
+  // describe("order by asc/desc", () => {
+  //   test("sorts by ascending order when specified", () => {});
+  // });
+  // describe("filters articles by the topic value specified in the query", () => {});
 });
 
 describe("Errors", () => {

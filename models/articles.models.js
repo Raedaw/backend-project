@@ -17,6 +17,11 @@ exports.selectArticles = (sort_by = "created_at", order = "DESC", topic) => {
   ];
   const validOrderOptions = ["ASC", "DESC"];
   const validTopics = ["mitch", "cats"];
+  console.log(!validSortOptions.includes(sort_by));
+  if (!validSortOptions.includes(sort_by)) {
+    return Promise.reject({ status: 404, msg: `${sort_by} does not exist` });
+  }
+
   let topicStr = "";
   if (topic !== undefined) {
     topicStr = `WHERE articles.topic = '${topic}' `;

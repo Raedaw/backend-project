@@ -450,6 +450,17 @@ describe("11. GET /api/articles (queries)", () => {
         expect(articles[0].topic).toBe(topic);
       });
   });
+  describe("error handling", () => {
+    test.only("status:404, responds with an error message when column doesn't exist in database", () => {
+      const sortByColumn = "im_not_real";
+      return request(app)
+        .get(`/api/articles?sort_by=${sortByColumn}`)
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe(`${sortByColumn} does not exist`);
+        });
+    });
+  });
 });
 
 describe("Errors", () => {

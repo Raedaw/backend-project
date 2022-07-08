@@ -11,6 +11,7 @@ const {
   getArticleComments,
   postComment,
   getApi,
+  deleteComment,
 } = require("./controllers/articles.controllers");
 const {
   handleInvalidPaths,
@@ -29,6 +30,8 @@ app.get("/api/articles/:article_id/comments", getArticleComments);
 
 app.patch("/api/articles/:article_id", patchArticleVotes);
 app.post("/api/articles/:article_id/comments", postComment);
+
+app.delete("/api/comments/:comment_id", deleteComment);
 
 //error handling:
 

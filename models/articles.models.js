@@ -118,3 +118,16 @@ exports.addComment = (article_id, newComment) => {
       });
   });
 };
+
+exports.removeComment = (comment_id) => {
+  if (comment_id.match(/^[\d]+/g) === null) {
+    return Promise.reject({ status: 400, msg: `Invalid comment ID` });
+  }
+  return checkExists("comments", "comment_id", comment_id).then(() => {
+    return db
+      .query("DELETE FROM comments WHERE comment_id = $1;", [comment_id])
+      .then((result) => {
+        return result.rows;
+      });
+  });
+};

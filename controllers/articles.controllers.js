@@ -7,6 +7,7 @@ const {
   selectArticles,
   fetchArticleComments,
   addComment,
+  removeComment,
 } = require("../models/articles.models");
 
 exports.getArticles = (req, res, next) => {
@@ -43,7 +44,6 @@ exports.getArticleComments = (req, res, next) => {
 
 exports.postComment = (req, res, next) => {
   const { article_id } = req.params;
-  // console.log(article_id.match(/^[\d]+/g) === null);
 
   addComment(article_id, req.body)
     .then((comment) => {
@@ -59,7 +59,14 @@ exports.getApi = (req, res) => {
     }
     res.status(200).send({ data });
   });
-  // .then((data) => {
-  //   console.log(data);
-  // });
+};
+
+exports.deleteComment = (req, res, next) => {
+  const { comment_id } = req.params;
+
+  removeComment(comment_id)
+    .then((response) => {
+      res.status(204).send({ response });
+    })
+    .catch(next);
 };

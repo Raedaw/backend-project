@@ -492,6 +492,17 @@ describe("11. GET /api/articles (queries)", () => {
         });
     });
   });
+  describe("GET /api ", () => {
+    test("status: 200 responds with json object containing information on all available endpoints", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({ body }) => {
+          console.log(body.data.length);
+        });
+    });
+  });
+
   describe("Errors", () => {
     test("status:404, responds with error message when passed an invalid route", () => {
       return request(app)

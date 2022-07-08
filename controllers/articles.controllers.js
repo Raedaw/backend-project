@@ -1,4 +1,5 @@
 //const db = require("../db/data");
+const fs = require("fs");
 const { checkArticleExists } = require("../db/helpers/utils");
 const {
   fetchArticleByID,
@@ -49,4 +50,16 @@ exports.postComment = (req, res, next) => {
       res.status(201).send({ comment });
     })
     .catch(next);
+};
+
+exports.getApi = (req, res) => {
+  return fs.readFile(`${__dirname}/../endpoints.json`, "utf8", (err, data) => {
+    if (err) {
+      console.log(err);
+    }
+    res.status(200).send({ data });
+  });
+  // .then((data) => {
+  //   console.log(data);
+  // });
 };

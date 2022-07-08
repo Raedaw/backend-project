@@ -26,10 +26,9 @@ You will need to add two files to the root directory of this repo:
    You will need to see the database using the command:
    `$ npm run seed `
 
-   tests can then be run using the command:
+Tests can then be run using the command:
+ ```
+$ npm run test
+```
 
-   ```
-   $ npm run test
-   ```
-
-this project was created using jest v27.5.1 and node.js v18.1.0
+This project was created using jest v27.5.1 and node.js v18.1.0

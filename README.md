@@ -11,7 +11,9 @@ please visit https://rachels-nc-notes.herokuapp.com/api which contains a descrip
 
 Upon forking and cloning this project, in order to install dependencies please run
 
-`$ npm install`
+```
+$ npm install
+```
 
 You will need to add two files to the root directory of this repo:
 

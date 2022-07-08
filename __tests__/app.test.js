@@ -451,7 +451,7 @@ describe("11. GET /api/articles (queries)", () => {
       });
   });
   describe("error handling", () => {
-    test("status:400, responds with an error message when column not valid", () => {
+    test("status:400, responds with an error message when the passed column is not a valid option", () => {
       const sortByColumn = "im_not_real";
       return request(app)
         .get(`/api/articles?sort_by=${sortByColumn}`)
@@ -460,37 +460,38 @@ describe("11. GET /api/articles (queries)", () => {
           expect(msg).toBe(`${sortByColumn} is not a valid sort by option`);
         });
     });
-  });
-  test("status:400, responds with an error message when passed order isn't ASC or DESC", () => {
-    const sortByColumn = "votes";
-    return request(app)
-      .get(`/api/articles?sort_by=${sortByColumn}&order=PASTA`)
-      .expect(400)
-      .then(({ body: { msg } }) => {
-        expect(msg).toBe(`invalid 'order by' input`);
-      });
-  });
-  test("status:404, responds with an error message when topic doesn't exist in the database", () => {
-    const topic = "unicorns";
-    return request(app)
-      .get(`/api/articles?topic=${topic}`)
-      .expect(404)
-      .then(({ body: { msg } }) => {
-        expect(msg).toBe(`topic does not exist`);
-      });
-  });
-  test("status:200, responds with an empty message when topic exists in the database but not the article", () => {
-    const topic = "paper";
-    return request(app)
-      .get(`/api/articles?topic=${topic}`)
-      .expect(200)
-      .then(({ body }) => {
-        const { articles } = body;
-        expect(articles.length).toBe(0);
-        expect(articles).toBeInstanceOf(Array);
-      });
-  });
 
+    test("status:400, responds with an error message when passed order isn't ASC or DESC", () => {
+      const sortByColumn = "votes";
+      return request(app)
+        .get(`/api/articles?sort_by=${sortByColumn}&order=PASTA`)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe(`invalid 'order by' input`);
+        });
+    });
+    test("status:404, responds with an error message when topic doesn't exist in the database", () => {
+      const topic = "unicorns";
+      return request(app)
+        .get(`/api/articles?topic=${topic}`)
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe(`topic does not exist`);
+        });
+    });
+
+    test("status:200, responds with an empty message when topic exists in the database but not the article", () => {
+      const topic = "paper";
+      return request(app)
+        .get(`/api/articles?topic=${topic}`)
+        .expect(200)
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles.length).toBe(0);
+          expect(articles).toBeInstanceOf(Array);
+        });
+    });
+  });
   describe("Errors", () => {
     test("status:404, responds with error message when passed an invalid route", () => {
       return request(app)

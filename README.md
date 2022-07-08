@@ -9,7 +9,7 @@ please visit https://rachels-nc-notes.herokuapp.com/api which contains a descrip
 
 ## Set-up instructions
 
-Upon forking and cloning this project, in order to install dependencies please run
+Upon forking and cloning this project, in order to install dependencies please run the command:
 
 ```
 $ npm install

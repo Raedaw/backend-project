@@ -52,15 +52,6 @@ exports.postComment = (req, res, next) => {
     .catch(next);
 };
 
-exports.getApi = (req, res) => {
-  return fs.readFile(`${__dirname}/../endpoints.json`, "utf8", (err, data) => {
-    if (err) {
-      console.log(err);
-    }
-    res.status(200).send({ data });
-  });
-};
-
 exports.deleteComment = (req, res, next) => {
   const { comment_id } = req.params;
 
@@ -69,4 +60,14 @@ exports.deleteComment = (req, res, next) => {
       res.status(204).send({ response });
     })
     .catch(next);
+};
+
+exports.getApi = (req, res) => {
+  return fs.readFile(`${__dirname}/../endpoints.json`, "utf8", (err, data) => {
+    if (err) {
+      console.log(err);
+    }
+    const parsedResponse = JSON.parse(data);
+    res.status(200).send({ parsedResponse });
+  });
 };

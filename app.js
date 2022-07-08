@@ -10,6 +10,7 @@ const {
   getArticles,
   getArticleComments,
   postComment,
+  getApi,
   deleteComment,
 } = require("./controllers/articles.controllers");
 const {
@@ -20,7 +21,7 @@ const {
   handleArticle404,
 } = require("./error-handling");
 app.use(express.json());
-
+app.get("/api", getApi);
 app.get("/api/topics", getTopics);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id", getArticleByID);

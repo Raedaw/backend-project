@@ -492,37 +492,66 @@ describe("11. GET /api/articles (queries)", () => {
         });
     });
   });
-});
 
-describe("12. ", () => {
-  test("204: responds with empty response body", () => {
-    return request(app).delete("/api/comments/1").expect(204);
+  describe("Errors", () => {
+    test("status:404, responds with error message when passed an invalid route", () => {
+      return request(app)
+        .get("/api/toopics")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Route not found");
+        });
+    });
   });
-  test("404: comment id does not exist", () => {
-    return request(app)
-      .delete("/api/comments/999")
-      .expect(404)
-      .then(({ body: { msg } }) => {
-        expect(msg).toBe(`comment_id does not exist`);
-      });
-  });
-  test("400: receives an error message when passed an invalid comment id", () => {
-    return request(app)
-      .delete("/api/comments/i_am_invalid")
-      .expect(400)
-      .then(({ body: { msg } }) => {
-        expect(msg).toBe(`Invalid comment ID`);
-      });
-  });
-});
 
-describe("Errors", () => {
-  test("status:404, responds with error message when passed an invalid route", () => {
-    return request(app)
-      .get("/api/toopics")
-      .expect(404)
-      .then(({ body }) => {
-        expect(body.msg).toBe("Route not found");
-      });
+  describe("12. DELETE /api/comments/:comment id", () => {
+    test("204: responds with empty response body", () => {
+      return request(app).delete("/api/comments/1").expect(204);
+    });
+    test("404: comment id does not exist", () => {
+      return request(app)
+        .delete("/api/comments/999")
+        .expect(404)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe(`comment_id does not exist`);
+        });
+    });
+    test("400: receives an error message when passed an invalid comment id", () => {
+      return request(app)
+        .delete("/api/comments/i_am_invalid")
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe(`Invalid comment ID`);
+        });
+    });
+  });
+
+  describe("GET /api ", () => {
+    test("status: 200 responds with json object containing information on all available endpoints", () => {
+      return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({ body }) => {
+          expect(body.parsedResponse["GET /api/topics"]).toEqual({
+            description: "serves an array of all topics",
+            queries: [],
+            exampleResponse: {
+              topics: [{ slug: "football", description: "Footie!" }],
+            },
+          });
+          expect(Object.keys(body.parsedResponse).length).toBe(9);
+        });
+    });
+  });
+
+  describe("Errors", () => {
+    test("status:404, responds with error message when passed an invalid route", () => {
+      return request(app)
+        .get("/api/toopics")
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Route not found");
+        });
+    });
   });
 });

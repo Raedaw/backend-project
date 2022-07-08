@@ -1,4 +1,5 @@
 //const db = require("../db/data");
+const fs = require("fs");
 const { checkArticleExists } = require("../db/helpers/utils");
 const {
   fetchArticleByID,
@@ -59,4 +60,14 @@ exports.deleteComment = (req, res, next) => {
       res.status(204).send({ response });
     })
     .catch(next);
+};
+
+exports.getApi = (req, res) => {
+  return fs.readFile(`${__dirname}/../endpoints.json`, "utf8", (err, data) => {
+    if (err) {
+      console.log(err);
+    }
+    const parsedResponse = JSON.parse(data);
+    res.status(200).send({ parsedResponse });
+  });
 };

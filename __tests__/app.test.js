@@ -503,3 +503,13 @@ describe("11. GET /api/articles (queries)", () => {
     });
   });
 });
+
+describe("12. ", () => {
+  test("204: responds with empty response body", () => {
+    return request(app).delete("/api/comments/1").expect(204);
+  });
+});
+
+// has my general 404 error disapeared? /api/toopics
+
+// how to get a response body when deleting

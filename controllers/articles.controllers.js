@@ -68,6 +68,6 @@ exports.getApi = (req, res) => {
       console.log(err);
     }
     const parsedResponse = JSON.parse(data);
-    res.status(200).send({ parsedResponse });
+    res.status(200).send(parsedResponse);
   });
 };

@@ -532,14 +532,14 @@ describe("11. GET /api/articles (queries)", () => {
         .get("/api")
         .expect(200)
         .then(({ body }) => {
-          expect(body.parsedResponse["GET /api/topics"]).toEqual({
+          expect(body["GET /api/topics"]).toEqual({
             description: "serves an array of all topics",
             queries: [],
             exampleResponse: {
               topics: [{ slug: "football", description: "Footie!" }],
             },
           });
-          expect(Object.keys(body.parsedResponse).length).toBe(9);
+          expect(Object.keys(body).length).toBe(9);
         });
     });
   });

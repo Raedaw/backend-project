@@ -43,7 +43,6 @@ exports.getArticleComments = (req, res, next) => {
 
 exports.postComment = (req, res, next) => {
   const { article_id } = req.params;
-  // console.log(article_id.match(/^[\d]+/g) === null);
 
   addComment(article_id, req.body)
     .then((comment) => {
@@ -54,8 +53,10 @@ exports.postComment = (req, res, next) => {
 
 exports.deleteComment = (req, res, next) => {
   const { comment_id } = req.params;
-  removeComment(comment_id).then((response) => {
-    console.log(response);
-    res.status(204).send({ response });
-  });
+
+  removeComment(comment_id)
+    .then((response) => {
+      res.status(204).send({ response });
+    })
+    .catch(next);
 };

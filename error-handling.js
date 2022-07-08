@@ -3,7 +3,7 @@ exports.handleInvalidPaths = (req, res) => {
 };
 
 exports.handleCustomErrors = (err, req, res, next) => {
-  console.log(err);
+  //console.log(err);
   // if (err.msg === `article_id does not exist` && err.code === "22P02") {
   //   res.status(400).send({ msg: "Invalid article ID" });
   // }
@@ -15,10 +15,10 @@ exports.handleCustomErrors = (err, req, res, next) => {
 };
 
 exports.handleArticle404 = (err, req, res, next) => {
-  console.log(err);
+  //console.log(err);
   if (err.code === "23503") {
     //foreign key restraint
-    console.log("23503");
+    //console.log("23503");
     res.status(404).send({ msg: `article ID does not exist` }); // need to also handle situation where username does not exist
   } else {
     next(err);

@@ -3,7 +3,7 @@
 Here is my solo backend javascript project.
 I have created an API for the purpose of accessing application data programmatically. The intention here is to mimic the building of a real world backend service (such as reddit) which should provide this information to the front end architecture.
 
-## hosted API
+## Hosted API
 
 please visit https://rachels-nc-notes.herokuapp.com/api which contains a description of all the available endpoints of the API.
 

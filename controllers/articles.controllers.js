@@ -32,7 +32,9 @@ exports.patchArticleVotes = (req, res, next) => {
   const { article_id } = req.params;
   updateArticleVotes(article_id, req.body)
     .then((article) => res.status(200).send({ article }))
-    .catch(next);
+    .catch((err) => {
+      next(err);
+    });
 };
 
 exports.getArticleComments = (req, res, next) => {

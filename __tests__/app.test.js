@@ -102,7 +102,7 @@ describe("5. PATCH /api/articles/:article_id", () => {
       .send(addVotes)
       .expect(400)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe(`Missing required fields`);
+        expect(msg).toBe("Invalid input");
       });
   });
   test("status: 400, responds with error message when passed an invalid input", () => {

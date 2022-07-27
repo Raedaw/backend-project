@@ -64,9 +64,12 @@ exports.fetchArticleByID = (article_id) => {
 };
 
 exports.updateArticleVotes = (article_id, votesObj) => {
-  const newVotes = votesObj.inc_votes;
+  const votes = votesObj.inc_votes;
   return db
-    .query("SELECT * FROM articles WHERE article_id = $1;", [article_id])
+    .query(
+      `UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *`,
+      [votes, article_id]
+    )
     .then((result) => {
       if (!votesObj.hasOwnProperty("inc_votes")) {
         return Promise.reject({
@@ -74,14 +77,13 @@ exports.updateArticleVotes = (article_id, votesObj) => {
           msg: `Missing required fields`,
         });
       }
-      if (typeof votesObj.inc_votes !== "number") {
+      if (votes && typeof votes !== "number") {
         return Promise.reject({
           status: 400,
           msg: `Invalid input`,
         });
       }
       const article = result.rows[0];
-      article.votes += newVotes;
       return article;
     });
 };
